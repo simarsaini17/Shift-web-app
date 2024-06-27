@@ -18,7 +18,7 @@ export interface TableProps<T> {
   renderCell: RenderCellFunction<T>;
 }
 
-const DataTable = <T, _>({
+const DataTable = <T extends { name: string }, _>({
   columns,
   rowsData,
   renderCell,
