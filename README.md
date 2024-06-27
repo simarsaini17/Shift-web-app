@@ -17,10 +17,9 @@ Make sure you have the following installed on your system:
 
 1. Clone the repository:
 
-   ```bash
-   git clone https://github.com/yourusername/Shift-web-app
-
-   ```
+```bash
+git clone https://github.com/simarsaini17/Shift-web-app
+```
 
 To run the project:
 
