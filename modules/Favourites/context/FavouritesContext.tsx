@@ -1,12 +1,6 @@
 "use client";
 
-import React, {
-  EventHandler,
-  createContext,
-  useCallback,
-  useContext,
-  useState,
-} from "react";
+import React, { createContext, useContext } from "react";
 import { CollegeDataType } from "@/utils/types";
 import useLocalStorage from "use-local-storage";
 

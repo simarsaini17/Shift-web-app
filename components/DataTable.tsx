@@ -6,7 +6,7 @@ import {
   TableRow,
   TableCell,
 } from "@nextui-org/table";
-import { CollegeDataType, Column } from "@/utils/types";
+import { Column } from "@/utils/types";
 
 export interface RenderCellFunction<T> {
   (item: T, columnKey: string): React.ReactNode;

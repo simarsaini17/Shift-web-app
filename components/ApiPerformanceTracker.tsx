@@ -1,9 +1,4 @@
-import { Line } from "react-chartjs-2";
 import { Cards } from "./Cards";
-import { Chart, registerables } from "chart.js";
-import { useEffect, useState } from "react";
-
-Chart.register(...registerables);
 
 interface ApiPerformanceProps {
   responseTime: number | null;

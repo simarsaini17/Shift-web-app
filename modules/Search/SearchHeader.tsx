@@ -1,5 +1,5 @@
 "use client";
-import React, { useRef } from "react";
+import React from "react";
 import { useCallback, useEffect, useState } from "react";
 
 import { SearchInput } from "@/components/SearchInput";
