@@ -11,6 +11,7 @@ export const FavouritesCollege = () => {
   const { toggleFavourite, favourites } = useFavourites();
   const [domLoaded, setDomLoaded] = useState(false);
 
+  // Render only when the component is mounted
   useEffect(() => {
     setDomLoaded(true);
   }, []);

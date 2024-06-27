@@ -26,6 +26,8 @@ function SearchHeader({
   const [suggestions, setSuggestions] = useState<CollegeDataType[] | null>([]);
   const [loading, setLoading] = useState(true);
 
+  // fetch suggestions based on searchQuery and selected country
+
   const fetchSuggestions = useCallback(
     async (searchQuery: string) => {
       if (!searchQuery) {
@@ -68,16 +70,21 @@ function SearchHeader({
     handleSelectCountry(dropDownKey);
   }, []);
 
+  // reset search when clicking clear filter button
   const handleClearSearch = useCallback(() => {
     handleSelectCountry(["Canada"]);
     setSearchInput("");
     setFilteredList([]);
   }, [handleSelectCountry]);
 
+  // Set selected sugggested value to the searchInput
+
   const handleSelectedSuggestedValue = useCallback(
     (name: string) => {
       if (suggestions && !loading) {
-        const suggested = suggestions?.filter((eachS) => eachS.name === name);
+        const suggested = suggestions?.filter(
+          (eachSuggestion) => eachSuggestion.name === name
+        );
         setSearchInput(name);
         setFilteredList([...suggested]);
         setSuggestions(null);

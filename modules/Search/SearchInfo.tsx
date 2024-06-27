@@ -17,6 +17,9 @@ const SearchInfo = () => {
   const [responseTime, setResponseTime] = useState<number | null>(null);
   const [statusCode, setStatusCode] = useState<number | undefined>();
 
+  // fetch data from getData function and setData from the response
+  // fetch colleges data every time country from drop down is selected
+
   useEffect(() => {
     const getCollegeData = async () => {
       setLoading(true);
@@ -27,7 +30,6 @@ const SearchInfo = () => {
 
         if (collegeData) {
           const endTime = performance.now();
-          const newTime = new Date().toLocaleTimeString();
 
           const newData = collegeData.map(
             (eachCollegeData: CollegeDataType) => ({
@@ -50,6 +52,7 @@ const SearchInfo = () => {
     getCollegeData();
   }, [selectedDropDown]);
 
+  // set drop down to every time dropdown is selected
   const handleSelectCountry = useCallback(
     (selectedCountry: string[]) => {
       setSelectedDropDown([selectedCountry.toString()]);
@@ -57,6 +60,7 @@ const SearchInfo = () => {
     [selectedDropDown]
   );
 
+  // set data to filtered data by college name
   const setFilteredList = useCallback((filteredData: CollegeDataType[]) => {
     setData(filteredData);
   }, []);

@@ -29,6 +29,8 @@ export const FavouritesProvider: React.FC<{ children: React.ReactNode }> = ({
     []
   );
 
+  // Add or remove favourites from list of favourites
+
   const toggleFavourite = (college: CollegeDataType) => {
     setFavourites((prevFavourites) => {
       const isFavourite = prevFavourites?.some(

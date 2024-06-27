@@ -52,6 +52,7 @@ export const SearchList = ({
   const { toggleFavourite, favourites } = useFavourites();
   const [renderCellData, setRenderCellData] = useState<CollegeDataType[]>([]);
 
+  // check if favourites are already there update the rencderCelldata
   useEffect(() => {
     if (favourites.length) {
       const updatedData = collegesData.map((college) => {
@@ -64,6 +65,7 @@ export const SearchList = ({
     }
   }, [favourites, collegesData]);
 
+  // callback to add and remove favourites
   const handleAddToFavourites = useCallback(
     (collegeData: CollegeDataType) => {
       toggleFavourite({ ...collegeData, favourites: true });
@@ -71,6 +73,7 @@ export const SearchList = ({
     [toggleFavourite]
   );
 
+  // function to render rows
   const renderCell = useCallback(
     (collegedata: CollegeDataType, columnKey: any) => {
       switch (columnKey) {
