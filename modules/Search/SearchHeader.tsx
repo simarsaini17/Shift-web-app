@@ -8,89 +8,70 @@ import { CollegeDataType } from "@/utils/types";
 import { Button } from "@nextui-org/button";
 import { countries } from "@/utils/countries";
 import { getDataByCollegeName } from "@/utils/api/getData";
-import { debounce } from "@/utils/Hooks/useDebounce";
+import useDebounce from "@/utils/Hooks/useDebounce";
 import Link from "next/link";
+import { useQuery } from "@tanstack/react-query";
 
 interface SearchHeaderProps {
   handleSelectCountry: (selectedCountry: string[]) => void;
   selectedDropDown: string[];
-  setFilteredList: (data: CollegeDataType[]) => void;
+  setFilteredData: (data: CollegeDataType[]) => void;
 }
 
 function SearchHeader({
   handleSelectCountry,
   selectedDropDown,
-  setFilteredList,
+  setFilteredData,
 }: SearchHeaderProps) {
   const [searchInput, setSearchInput] = useState<string>("");
-  const [suggestions, setSuggestions] = useState<CollegeDataType[] | null>([]);
-  const [loading, setLoading] = useState(true);
+  const debouncedSearchInput = useDebounce(searchInput, 300);
 
   // fetch suggestions based on searchQuery and selected country
 
-  const fetchSuggestions = useCallback(
-    async (searchQuery: string) => {
-      if (!searchQuery) {
-        setSuggestions(null);
-        return;
-      }
-
-      setLoading(true);
-
-      try {
-        const { data: collegeData } = await getDataByCollegeName(
-          searchQuery,
-          selectedDropDown
-        );
-        if (collegeData) {
-          setSuggestions(collegeData);
-          setLoading(false);
-        }
-      } catch (error) {
-        setLoading(false);
-      }
-    },
-    [searchInput, selectedDropDown]
-  );
-
-  const debouncedFetchSuggestions = useCallback(
-    debounce(fetchSuggestions, 300),
-    []
-  );
-
-  useEffect(() => {
-    debouncedFetchSuggestions(searchInput);
-  }, [searchInput, debouncedFetchSuggestions]);
+  const { data: suggestions, isLoading } = useQuery({
+    queryKey: ["suggestions", debouncedSearchInput, selectedDropDown],
+    queryFn: () =>
+      getDataByCollegeName(debouncedSearchInput, selectedDropDown[0]),
+    enabled: !!debouncedSearchInput,
+  });
 
   const handleInputChange = (value: string) => {
     setSearchInput(value);
   };
 
-  const handleSeletedDropDown = useCallback((dropDownKey: any) => {
-    handleSelectCountry(dropDownKey);
-  }, []);
+  const handleSeletedDropDown = useCallback(
+    (dropDownKey: any) => {
+      handleSelectCountry(dropDownKey);
+      setSearchInput("");
+      setFilteredData([]);
+    },
+    [handleSelectCountry]
+  );
 
   // reset search when clicking clear filter button
   const handleClearSearch = useCallback(() => {
-    handleSelectCountry(["Canada"]);
     setSearchInput("");
-    setFilteredList([]);
-  }, [handleSelectCountry]);
+    setFilteredData([]);
+  }, []);
+
+  const handleClearFilters = useCallback(() => {
+    handleClearSearch();
+    handleSelectCountry(["Canada"]);
+  }, []);
 
   // Set selected sugggested value to the searchInput
 
   const handleSelectedSuggestedValue = useCallback(
     (name: string) => {
-      if (suggestions && !loading) {
+      if (suggestions && !isLoading) {
         const suggested = suggestions?.filter(
-          (eachSuggestion) => eachSuggestion.name === name
+          (eachSuggestion: CollegeDataType) => eachSuggestion.name === name
         );
         setSearchInput(name);
-        setFilteredList([...suggested]);
-        setSuggestions(null);
+        setFilteredData([...suggested]);
       }
     },
-    [suggestions, searchInput, setFilteredList, setSearchInput]
+    [suggestions, searchInput, setFilteredData, setSearchInput]
   );
 
   return (
@@ -106,7 +87,7 @@ function SearchHeader({
               value={searchInput}
               onChange={handleInputChange}
               placeholder="Search..."
-              clasName="w-72 sm:w-96 border-transparent p-2 focus:outline-none"
+              className="w-72 sm:w-96 border-transparent p-2 focus:outline-none"
             />
 
             <Button
@@ -122,19 +103,21 @@ function SearchHeader({
             </Button>
           </div>
 
-          {searchInput && suggestions && (
+          {!isLoading && searchInput && suggestions && (
             <ul className="absolute top-full w-72 sm:w-80 mt-2 bg-white rounded-lg shadow-lg z-10 overflow-auto max-h-60 p-2">
-              {suggestions?.map((eachSuggestion, index) => (
-                <li
-                  key={index}
-                  className="p-2 hover:bg-slate-200 hover:rounded-lg cursor-pointer"
-                  onClick={() =>
-                    handleSelectedSuggestedValue(eachSuggestion.name)
-                  }
-                >
-                  {eachSuggestion.name}
-                </li>
-              ))}
+              {suggestions?.map(
+                (eachSuggestion: CollegeDataType, index: number) => (
+                  <li
+                    key={index}
+                    className="p-2 hover:bg-slate-200 hover:rounded-lg cursor-pointer"
+                    onClick={() =>
+                      handleSelectedSuggestedValue(eachSuggestion.name)
+                    }
+                  >
+                    {eachSuggestion.name}
+                  </li>
+                )
+              )}
             </ul>
           )}
         </div>
@@ -145,7 +128,7 @@ function SearchHeader({
             handleSelectedDropDown={handleSeletedDropDown}
             className="text-black"
           />
-          <Button onClick={handleClearSearch}>Clear Filters</Button>
+          <Button onClick={handleClearFilters}>Clear Filters</Button>
         </div>
         <div className="flex justify-end">
           <Link href={"/FavouritesPage"}>

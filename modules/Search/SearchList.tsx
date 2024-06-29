@@ -54,7 +54,7 @@ export const SearchList = ({
 
   // check if favourites are already there update the rencderCelldata
   useEffect(() => {
-    if (favourites.length) {
+    if (favourites.length && collegesData) {
       const updatedData = collegesData.map((college) => {
         const isFavourite = favourites.some((fav) => fav.name === college.name);
         return { ...college, favourites: isFavourite };
@@ -110,6 +110,7 @@ export const SearchList = ({
   if (loading) {
     return <Spinner size="lg" />;
   }
+  if (!renderCellData) return null;
 
   return (
     <div className="flex lg:flex-row gap-x-12 flex-col-reverse max-lg:items-center max-lg:gap-y-4">
