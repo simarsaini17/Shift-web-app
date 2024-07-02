@@ -27,13 +27,13 @@ export const tableColHeader: Column[] = [
   },
 ];
 
-export function getCellData(collegedata: string | Array<string>) {
+export function getCellData(collegedata: string | Array<string>): string {
   if (Array.isArray(collegedata)) {
     collegedata.map((eachCollegeData: string | Array<string>) => {
       getCellData(eachCollegeData);
     });
   }
-  return collegedata;
+  return collegedata + " ";
 }
 
 interface SearchListProps {

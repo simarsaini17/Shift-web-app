@@ -24,7 +24,8 @@ function SearchHeader({
   setFilteredData,
 }: SearchHeaderProps) {
   const [searchInput, setSearchInput] = useState<string>("");
-  const debouncedSearchInput = useDebounce(searchInput, 300);
+  const debouncedSearchInput = useDebounce(searchInput, 500);
+  const [suggestionSelected, setSuggestionsetSelected] = useState(false);
 
   // fetch suggestions based on searchQuery and selected country
 
@@ -44,6 +45,7 @@ function SearchHeader({
       handleSelectCountry(dropDownKey);
       setSearchInput("");
       setFilteredData([]);
+      setSuggestionsetSelected(false);
     },
     [handleSelectCountry]
   );
@@ -52,12 +54,13 @@ function SearchHeader({
   const handleClearSearch = useCallback(() => {
     setSearchInput("");
     setFilteredData([]);
+    setSuggestionsetSelected(false);
   }, []);
 
   const handleClearFilters = useCallback(() => {
     handleClearSearch();
     handleSelectCountry(["Canada"]);
-  }, []);
+  }, [handleClearSearch]);
 
   // Set selected sugggested value to the searchInput
 
@@ -69,9 +72,10 @@ function SearchHeader({
         );
         setSearchInput(name);
         setFilteredData([...suggested]);
+        setSuggestionsetSelected(true);
       }
     },
-    [suggestions, searchInput, setFilteredData, setSearchInput]
+    [suggestions, isLoading, setFilteredData, setSearchInput]
   );
 
   return (
@@ -103,8 +107,8 @@ function SearchHeader({
             </Button>
           </div>
 
-          {!isLoading && searchInput && suggestions && (
-            <ul className="absolute top-full w-72 sm:w-80 mt-2 bg-white rounded-lg shadow-lg z-10 overflow-auto max-h-60 p-2">
+          {!suggestionSelected && searchInput && suggestions && (
+            <ul className="absolute top-full w-72 sm:w-80 mt-2 bg-white rounded-lg shadow-lg z-40 overflow-auto max-h-60 p-2">
               {suggestions?.map(
                 (eachSuggestion: CollegeDataType, index: number) => (
                   <li

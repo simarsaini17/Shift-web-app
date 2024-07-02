@@ -23,7 +23,6 @@ const SearchInfo = () => {
   const fetchCollegeData = async (country: string) => {
     const startTime = performance.now();
     const { data, statusCode } = await getData(country);
-    console.log(statusCode);
     const endTime = performance.now();
     setResponseTime(endTime - startTime);
     setStatusCode(statusCode);
