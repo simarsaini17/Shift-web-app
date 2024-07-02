@@ -55,7 +55,7 @@ function SearchHeader({
 
   const debouncedFetchSuggestions = useCallback(
     debounce(fetchSuggestions, 300),
-    []
+    [selectedDropDown]
   );
 
   useEffect(() => {
@@ -66,12 +66,21 @@ function SearchHeader({
     setSearchInput(value);
   };
 
-  const handleSeletedDropDown = useCallback((dropDownKey: any) => {
-    handleSelectCountry(dropDownKey);
-  }, []);
+  const handleSeletedDropDown = useCallback(
+    (dropDownKey: any) => {
+      handleSelectCountry(dropDownKey);
+    },
+    [handleSelectCountry]
+  );
 
   // reset search when clicking clear filter button
   const handleClearSearch = useCallback(() => {
+    handleSeletedDropDown(selectedDropDown);
+    setSearchInput("");
+    setFilteredList([]);
+  }, [handleSelectCountry]);
+
+  const handleClearFilters = useCallback(() => {
     handleSelectCountry(["Canada"]);
     setSearchInput("");
     setFilteredList([]);
@@ -145,7 +154,7 @@ function SearchHeader({
             handleSelectedDropDown={handleSeletedDropDown}
             className="text-black"
           />
-          <Button onClick={handleClearSearch}>Clear Filters</Button>
+          <Button onClick={handleClearFilters}>Clear Filters</Button>
         </div>
         <div className="flex justify-end">
           <Link href={"/FavouritesPage"}>
