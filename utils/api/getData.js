@@ -1,4 +1,4 @@
-export async function getData(country, name) {
+export async function getData(country) {
   try {
     const response = await fetch(
       `http://universities.hipolabs.com/search?country=${country}`
